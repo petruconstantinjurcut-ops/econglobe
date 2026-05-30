@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const API = "https://api.anthropic.com/v1/messages";
