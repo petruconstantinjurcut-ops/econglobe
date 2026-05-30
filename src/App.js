@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 const API = "https://api.anthropic.com/v1/messages";
 
@@ -576,38 +576,34 @@ function NewsPage() {
 
 // ── Glossary Page ─────────────────────────────────────────────────────────────
 const TERMS = [
-  { word: "Inflation", icon: "📈" }, { word: "Deflation", icon: "📉" },
-  { word: "GDP", icon: "🏭" }, { word: "Interest Rate", icon: "🏦" },
-  { word: "Bull Market", icon: "🐂" }, { word: "Bear Market", icon: "🐻" },
-  { word: "Quantitative Easing", icon: "💵" }, { word: "Recession", icon: "⚠️" },
-  { word: "Stagflation", icon: "🌀" }, { word: "Fiscal Policy", icon: "🏛️" },
-  { word: "Liquidity", icon: "💧" }, { word: "Hedge Fund", icon: "🛡️" },
+  { word: "Inflation", icon: "📈", definition: "Inflation is the gradual erosion of your money's purchasing power over time — the reason a coffee that cost $1 in 1990 costs $5 today. It happens when too much money chases too few goods, pushing prices upward across the entire economy. Central banks like the Federal Reserve target a healthy rate of around 2% per year, believing a small amount keeps economies moving forward without spiraling out of control.", formula: "Inflation Rate = ((Current CPI - Previous CPI) / Previous CPI) x 100", example: "In 2022, US inflation hit 9.1% — the highest in 40 years — driven by supply chain disruptions and post-pandemic spending, forcing the Fed to raise interest rates 11 times in a row.", related: ["Deflation", "Interest Rate", "Stagflation"] },
+  { word: "Deflation", icon: "📉", definition: "Deflation is the opposite of inflation — a sustained fall in the general price level of goods and services. While cheaper prices sound appealing, deflation is feared by economists because it causes consumers to delay purchases expecting even lower prices tomorrow, slowing the entire economy. It can spiral into a dangerous cycle where falling prices lead to lower profits, layoffs, and reduced spending.", formula: "Deflation occurs when Inflation Rate falls below 0%", example: "Japan experienced over two decades of deflation from the 1990s into the 2010s — a period called the Lost Decades — during which economic growth stagnated and consumer confidence collapsed.", related: ["Inflation", "Recession", "Quantitative Easing"] },
+  { word: "GDP", icon: "🏭", definition: "Gross Domestic Product is the total monetary value of all goods and services produced within a country in a given period — essentially the scorecard of an entire nation's economic output. It is the single most widely used measure of economic size and health, used to compare countries and track whether an economy is expanding or contracting. GDP per capita divides this figure by the population to give a rough sense of average living standards.", formula: "GDP = Consumption + Investment + Government Spending + (Exports - Imports)", example: "The US GDP surpassed $27 trillion in 2024, making it the world's largest economy — nearly double China's $18 trillion despite China having four times the population.", related: ["Recession", "Fiscal Policy", "Inflation"] },
+  { word: "Interest Rate", icon: "🏦", definition: "An interest rate is the cost of borrowing money, expressed as a percentage of the loan amount per year. Set by central banks, it is one of the most powerful levers in economics — raising rates makes borrowing expensive, cooling inflation but slowing growth, while cutting rates stimulates spending but risks inflation. Every mortgage, car loan, credit card, and business investment in the world is influenced by this single number.", formula: "Simple Interest = Principal x Rate x Time", example: "When the Federal Reserve raised its benchmark rate from near 0% to over 5% between 2022 and 2023, US mortgage rates doubled to over 7%, causing home sales to drop to their lowest level in decades.", related: ["Inflation", "Quantitative Easing", "Recession"] },
+  { word: "Bull Market", icon: "🐂", definition: "A bull market describes a period of sustained rising prices in financial markets — typically defined as a 20% or more gain from recent lows — driven by strong investor confidence, economic growth, and widespread optimism. The term comes from the way a bull attacks, thrusting its horns upward. Bull markets can last months or years and are characterized by high trading volumes, strong corporate earnings, and a fear of missing out.", formula: "Bull Market = 20% or more rise sustained from recent lows", example: "The longest bull market in US history ran from March 2009 to February 2020 — an 11-year run where the S&P 500 gained over 400%, powered by low interest rates and booming tech growth.", related: ["Bear Market", "Recession", "Liquidity"] },
+  { word: "Bear Market", icon: "🐻", definition: "A bear market is a prolonged period of falling asset prices, officially defined as a decline of 20% or more from recent highs, accompanied by widespread pessimism and negative economic outlook. The term comes from the way a bear attacks, swiping its paws downward. Bear markets are triggered by recessions, financial crises, or sudden economic shocks and can last anywhere from a few months to several years.", formula: "Bear Market = 20% or more decline from recent market highs", example: "The 2008 financial crisis triggered one of the worst bear markets in history — the S&P 500 lost 57% of its value between October 2007 and March 2009 as the global banking system nearly collapsed.", related: ["Bull Market", "Recession", "Hedge Fund"] },
+  { word: "Quantitative Easing", icon: "💵", definition: "Quantitative Easing is an unconventional monetary policy where a central bank creates new money electronically and uses it to purchase financial assets like government bonds from banks. This floods the financial system with cash, lowers long-term interest rates, and encourages lending when traditional rate cuts are no longer effective. Critics argue QE widens wealth inequality by inflating asset prices that mainly benefit the wealthy.", formula: "QE: Central Bank creates money, buys bonds, expands money supply, lowers long-term rates", example: "After the 2008 financial crisis, the US Federal Reserve launched multiple rounds of QE, expanding its balance sheet from $900 billion to over $4.5 trillion to prevent economic collapse.", related: ["Inflation", "Interest Rate", "Recession"] },
+  { word: "Recession", icon: "⚠️", definition: "A recession is a significant decline in economic activity that spreads across the economy and lasts more than a few months, technically defined as two consecutive quarters of negative GDP growth. During a recession, businesses cut spending, unemployment rises, consumer confidence drops, and credit tightens. Recessions are a normal part of the economic cycle, but their severity can range from mild slowdowns to devastating crashes.", formula: "Recession = 2 consecutive quarters of negative GDP growth", example: "The COVID-19 recession in 2020 was the sharpest but shortest on record — the US economy shrank 31.4% in Q2, then rebounded 33.4% in Q3 thanks to over $5 trillion in government stimulus.", related: ["GDP", "Bear Market", "Fiscal Policy"] },
+  { word: "Stagflation", icon: "🌀", definition: "Stagflation is the rare and painful economic condition where high inflation and economic stagnation occur at the same time. It defies the traditional logic that inflation and unemployment move in opposite directions, leaving policymakers trapped: raising rates to fight inflation makes the stagnation worse, but cutting rates to boost growth makes inflation higher. It is considered one of the hardest economic problems to solve.", formula: "Stagflation = High Inflation + High Unemployment + Zero or Negative Growth", example: "The 1970s oil crisis caused textbook stagflation in the US — OPEC's embargo quadrupled energy prices, pushing inflation above 10% while unemployment climbed above 9%, paralyzing the economy for nearly a decade.", related: ["Inflation", "Recession", "Fiscal Policy"] },
+  { word: "Fiscal Policy", icon: "🏛️", definition: "Fiscal policy is the government's use of taxation and public spending to influence the direction of the economy. When the economy slows, governments cut taxes and increase spending to inject money into the system. When inflation runs hot, they raise taxes and cut spending to cool demand. Unlike monetary policy run by central banks, fiscal policy is controlled by elected governments and directly affects public services, infrastructure, and welfare.", formula: "Budget Deficit = Government Spending minus Tax Revenue", example: "During the COVID-19 pandemic, the US deployed over $5 trillion in fiscal stimulus — including direct checks to citizens and business loans — the largest peacetime fiscal intervention in American history.", related: ["GDP", "Recession", "Inflation"] },
+  { word: "Liquidity", icon: "💧", definition: "Liquidity describes how quickly and easily an asset can be converted into cash without significantly affecting its price. Cash itself is perfectly liquid, while real estate or rare art is highly illiquid. In financial markets, liquidity is the lifeblood of healthy trading — when liquidity dries up during a crisis, even solid assets become impossible to sell at fair prices, turning manageable problems into catastrophic collapses.", formula: "Liquidity Ratio = Current Assets divided by Current Liabilities", example: "During the 2008 financial crisis, the market for mortgage-backed securities became completely illiquid overnight — banks held billions in assets they could not sell at any price, forcing emergency government bailouts.", related: ["Bear Market", "Hedge Fund", "Quantitative Easing"] },
+  { word: "Hedge Fund", icon: "🛡️", definition: "A hedge fund is a private investment partnership that pools capital from wealthy individuals and institutions to pursue aggressive strategies aimed at high returns regardless of market conditions. Unlike mutual funds, hedge funds can short sell, use leverage, trade derivatives, and invest in almost anything — currencies, distressed debt, commodities, or real estate. The name comes from their original goal of hedging against market downturns.", formula: "Standard Fee: 2% annual management fee + 20% of all profits generated", example: "George Soros famously broke the Bank of England in 1992, shorting the British pound so aggressively that the UK was forced to exit the European Exchange Rate Mechanism, earning Soros an estimated $1 billion in a single day.", related: ["Bull Market", "Bear Market", "Liquidity"] },
 ];
 
 function GlossaryPage() {
   const [selected, setSelected] = useState(null);
-  const [defs, setDefs] = useState({});
-  const [loading, setLoading] = useState({});
-
-  const load = async (term) => {
-    if (defs[term]) { setSelected(term); return; }
-    setSelected(term);
-    setLoading(l => ({ ...l, [term]: true }));
-    const r = await askClaude(`Define the economics term "${term}" for a general audience. Return JSON: {"definition":"3 sentence definition","example":"one real-world example in one sentence","related":["term1","term2","term3"],"formula":"short formula or key fact, or null if not applicable"}`);
-    setDefs(d => ({ ...d, [term]: r || { definition: `${term} is a key concept in economics related to the broader functioning of markets and monetary systems.`, example: "This concept plays a role in central bank policy decisions worldwide.", related: [], formula: null } }));
-    setLoading(l => ({ ...l, [term]: false }));
-  };
+  const termData = selected ? TERMS.find(t => t.word === selected) : null;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <div className="fade-up">
         <h2 style={{ color: C.text, fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Economics Glossary</h2>
-        <p style={{ color: C.muted, fontSize: 13 }}>Tap a term for an AI-powered definition</p>
+        <p style={{ color: C.muted, fontSize: 13 }}>Tap a term to read its definition</p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 10 }}>
         {TERMS.map((t, i) => (
-          <button key={i} onClick={() => load(t.word)} className="btn-hover fade-up"
+          <button key={i} onClick={() => setSelected(selected === t.word ? null : t.word)} className="btn-hover fade-up"
             style={{
               animationDelay: `${i * 40}ms`,
               background: selected === t.word ? C.accentDim : C.bgCard,
@@ -620,46 +616,45 @@ function GlossaryPage() {
         ))}
       </div>
 
-      {selected && (
+      {selected && termData && (
         <div className="scale-in" style={{ background: C.bgCard, border: `1px solid ${C.accent}44`, borderTop: `3px solid ${C.accent}`, borderRadius: 14, padding: "20px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <h3 style={{ color: C.accent, fontSize: 19, fontWeight: 700 }}>{selected}</h3>
-            <button onClick={() => setSelected(null)} className="btn-hover" style={{ background: C.border, border: "none", color: C.muted, cursor: "pointer", fontSize: 16, width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+            <button onClick={() => setSelected(null)} className="btn-hover" style={{ background: C.border, border: "none", color: C.muted, cursor: "pointer", fontSize: 16, width: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>x</button>
           </div>
-          {loading[selected] ? <Loader text="Looking up definition" /> : defs[selected] ? (
-            <div className="fade-up" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <p style={{ color: C.text, fontSize: 14, lineHeight: 1.75 }}>{defs[selected].definition}</p>
-              {defs[selected].formula && (
-                <div style={{ background: "#0a0f1e", borderRadius: 8, padding: "10px 16px", fontFamily: "monospace", color: C.gold, fontSize: 13, border: `1px solid ${C.border}` }}>
-                  {defs[selected].formula}
+          <div className="fade-up" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <p style={{ color: C.text, fontSize: 14, lineHeight: 1.75 }}>{termData.definition}</p>
+            {termData.formula && (
+              <div style={{ background: "#0a0f1e", borderRadius: 8, padding: "10px 16px", fontFamily: "monospace", color: C.gold, fontSize: 13, border: `1px solid ${C.border}` }}>
+                {termData.formula}
+              </div>
+            )}
+            {termData.example && (
+              <div style={{ borderLeft: `2px solid ${C.gold}`, paddingLeft: 14 }}>
+                <div style={{ color: C.gold, fontSize: 10, fontWeight: 700, marginBottom: 5, letterSpacing: 1 }}>REAL-WORLD EXAMPLE</div>
+                <p style={{ color: C.mutedLight, fontSize: 13, lineHeight: 1.65, margin: 0 }}>{termData.example}</p>
+              </div>
+            )}
+            {termData.related && termData.related.length > 0 && (
+              <div>
+                <div style={{ color: C.muted, fontSize: 10, marginBottom: 9, letterSpacing: 1 }}>RELATED TERMS</div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {termData.related.map((r, i) => (
+                    <button key={i} onClick={() => setSelected(r)} className="btn-hover"
+                      style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 7, padding: "5px 13px", color: C.accent, fontSize: 12, cursor: "pointer" }}>
+                      {r}
+                    </button>
+                  ))}
                 </div>
-              )}
-              {defs[selected].example && (
-                <div style={{ borderLeft: `2px solid ${C.gold}`, paddingLeft: 14 }}>
-                  <div style={{ color: C.gold, fontSize: 10, fontWeight: 700, marginBottom: 5, letterSpacing: 1 }}>REAL-WORLD EXAMPLE</div>
-                  <p style={{ color: C.mutedLight, fontSize: 13, lineHeight: 1.65, margin: 0 }}>{defs[selected].example}</p>
-                </div>
-              )}
-              {defs[selected].related?.length > 0 && (
-                <div>
-                  <div style={{ color: C.muted, fontSize: 10, marginBottom: 9, letterSpacing: 1 }}>RELATED TERMS</div>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                    {defs[selected].related.map((r, i) => (
-                      <button key={i} onClick={() => load(r)} className="btn-hover"
-                        style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 7, padding: "5px 13px", color: C.accent, fontSize: 12, cursor: "pointer" }}>
-                        {r}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : null}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
   );
 }
+
 
 // ── Invest Page ───────────────────────────────────────────────────────────────
 function InvestPage() {
