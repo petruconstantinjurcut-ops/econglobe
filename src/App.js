@@ -86,7 +86,116 @@ const FALLBACK_MARKETS = {
   summary: "Global markets are showing resilience as inflation continues to moderate across major economies. Investor sentiment remains cautiously optimistic ahead of central bank decisions.",
 };
 
-// ── Colors & constants ────────────────────────────────────────────────────────
+// ── Country profile data (for clickable Markets countries) ────────────────────
+const COUNTRY_DATA = {
+  USA: {
+    flag: "🇺🇸", name: "United States", currency: "USD",
+    gdp_total: "$27.4T", gdp_rank: "#1", population: "335M",
+    gdp_history: [2.3, 5.8, 1.9, 2.5, 2.8, 2.5],
+    years: ["2020", "2021", "2022", "2023", "2024", "2025"],
+    inflation: 3.2, unemployment: 3.9, interest_rate: 5.25,
+    summary: "The world's largest economy, driven by technology, consumer spending, and services. Home to the most valuable companies on Earth.",
+    companies: [
+      { name: "Apple", ticker: "AAPL", sector: "Technology", change: 1.2 },
+      { name: "Microsoft", ticker: "MSFT", sector: "Technology", change: 0.8 },
+      { name: "NVIDIA", ticker: "NVDA", sector: "Semiconductors", change: 3.1 },
+      { name: "Amazon", ticker: "AMZN", sector: "E-Commerce", change: -0.4 },
+      { name: "JPMorgan", ticker: "JPM", sector: "Banking", change: 0.6 },
+    ],
+  },
+  China: {
+    flag: "🇨🇳", name: "China", currency: "CNY",
+    gdp_total: "$18.5T", gdp_rank: "#2", population: "1.41B",
+    gdp_history: [2.2, 8.4, 3.0, 5.2, 4.8, 4.8],
+    years: ["2020", "2021", "2022", "2023", "2024", "2025"],
+    inflation: 0.9, unemployment: 5.2, interest_rate: 3.45,
+    summary: "The world's manufacturing powerhouse and second-largest economy, rapidly expanding in EVs, tech, and renewable energy.",
+    companies: [
+      { name: "Tencent", ticker: "TCEHY", sector: "Technology", change: 1.5 },
+      { name: "Alibaba", ticker: "BABA", sector: "E-Commerce", change: -0.8 },
+      { name: "BYD", ticker: "BYDDY", sector: "Electric Vehicles", change: 2.3 },
+      { name: "PetroChina", ticker: "PTR", sector: "Energy", change: 0.4 },
+      { name: "ICBC", ticker: "IDCBY", sector: "Banking", change: 0.2 },
+    ],
+  },
+  India: {
+    flag: "🇮🇳", name: "India", currency: "INR",
+    gdp_total: "$3.9T", gdp_rank: "#5", population: "1.43B",
+    gdp_history: [-5.8, 9.1, 7.0, 7.8, 6.9, 6.9],
+    years: ["2020", "2021", "2022", "2023", "2024", "2025"],
+    inflation: 5.1, unemployment: 7.8, interest_rate: 6.5,
+    summary: "The fastest-growing major economy, powered by a young population, booming IT services, and rapid digital adoption.",
+    companies: [
+      { name: "Reliance", ticker: "RELI", sector: "Conglomerate", change: 1.1 },
+      { name: "TCS", ticker: "TCS", sector: "IT Services", change: 0.9 },
+      { name: "HDFC Bank", ticker: "HDB", sector: "Banking", change: 0.5 },
+      { name: "Infosys", ticker: "INFY", sector: "IT Services", change: 1.4 },
+      { name: "ICICI Bank", ticker: "IBN", sector: "Banking", change: 0.7 },
+    ],
+  },
+  EU: {
+    flag: "🇪🇺", name: "European Union", currency: "EUR",
+    gdp_total: "$18.3T", gdp_rank: "#3", population: "448M",
+    gdp_history: [-5.6, 5.9, 3.4, 0.4, 0.6, 0.6],
+    years: ["2020", "2021", "2022", "2023", "2024", "2025"],
+    inflation: 2.6, unemployment: 6.5, interest_rate: 4.5,
+    summary: "A unified bloc of 27 nations with strong industrial, luxury, and pharmaceutical sectors. Slow but stable growth in recent years.",
+    companies: [
+      { name: "LVMH", ticker: "LVMUY", sector: "Luxury", change: 0.8 },
+      { name: "ASML", ticker: "ASML", sector: "Semiconductors", change: 2.1 },
+      { name: "SAP", ticker: "SAP", sector: "Software", change: 1.0 },
+      { name: "Novo Nordisk", ticker: "NVO", sector: "Pharma", change: 1.7 },
+      { name: "Siemens", ticker: "SIEGY", sector: "Industrial", change: 0.4 },
+    ],
+  },
+  UK: {
+    flag: "🇬🇧", name: "United Kingdom", currency: "GBP",
+    gdp_total: "$3.3T", gdp_rank: "#6", population: "67M",
+    gdp_history: [-10.4, 8.7, 4.3, 0.1, -0.2, -0.2],
+    years: ["2020", "2021", "2022", "2023", "2024", "2025"],
+    inflation: 3.8, unemployment: 4.2, interest_rate: 5.25,
+    summary: "A global financial hub anchored by London, with strong banking, pharmaceutical, and energy sectors navigating post-Brexit adjustments.",
+    companies: [
+      { name: "AstraZeneca", ticker: "AZN", sector: "Pharma", change: 1.3 },
+      { name: "Shell", ticker: "SHEL", sector: "Energy", change: -0.5 },
+      { name: "HSBC", ticker: "HSBC", sector: "Banking", change: 0.6 },
+      { name: "Unilever", ticker: "UL", sector: "Consumer Goods", change: 0.3 },
+      { name: "BP", ticker: "BP", sector: "Energy", change: -0.7 },
+    ],
+  },
+  Japan: {
+    flag: "🇯🇵", name: "Japan", currency: "JPY",
+    gdp_total: "$4.2T", gdp_rank: "#4", population: "124M",
+    gdp_history: [-4.5, 2.6, 1.0, 1.9, 0.4, 0.4],
+    years: ["2020", "2021", "2022", "2023", "2024", "2025"],
+    inflation: 2.8, unemployment: 2.5, interest_rate: 0.1,
+    summary: "A technology and automotive leader with the world's lowest interest rates. Known for robotics, electronics, and precision manufacturing.",
+    companies: [
+      { name: "Toyota", ticker: "TM", sector: "Automotive", change: 1.0 },
+      { name: "Sony", ticker: "SONY", sector: "Electronics", change: 1.6 },
+      { name: "Nintendo", ticker: "NTDOY", sector: "Gaming", change: 2.2 },
+      { name: "SoftBank", ticker: "SFTBY", sector: "Technology", change: -0.3 },
+      { name: "Honda", ticker: "HMC", sector: "Automotive", change: 0.5 },
+    ],
+  },
+  Brazil: {
+    flag: "🇧🇷", name: "Brazil", currency: "BRL",
+    gdp_total: "$2.2T", gdp_rank: "#9", population: "216M",
+    gdp_history: [-3.3, 5.0, 3.0, 2.9, 2.5, 2.5],
+    years: ["2020", "2021", "2022", "2023", "2024", "2025"],
+    inflation: 4.5, unemployment: 7.8, interest_rate: 10.5,
+    summary: "Latin America's largest economy, rich in commodities, agriculture, and mining, with a growing fintech and digital banking scene.",
+    companies: [
+      { name: "Petrobras", ticker: "PBR", sector: "Energy", change: 0.9 },
+      { name: "Vale", ticker: "VALE", sector: "Mining", change: -1.1 },
+      { name: "Nu Holdings", ticker: "NU", sector: "Fintech", change: 2.8 },
+      { name: "Itaú Unibanco", ticker: "ITUB", sector: "Banking", change: 0.6 },
+      { name: "Ambev", ticker: "ABEV", sector: "Beverages", change: 0.2 },
+    ],
+  },
+};
+
+
 const C = {
   bg: "#040d1f", bgCard: "#071220", bgPanel: "#0a1930",
   border: "#0f2040", borderHover: "#1a3a60",
@@ -222,6 +331,67 @@ function BarChart({ data, color }) {
         );
       })}
     </div>
+  );
+}
+
+// Animated line chart for GDP history
+function AnimatedLineChart({ data, labels, color = "#0ea5e9", h = 160 }) {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    let p = 0;
+    const t = setInterval(() => { p += 0.04; setProgress(Math.min(p, 1)); if (p >= 1) clearInterval(t); }, 16);
+    return () => clearInterval(t);
+  }, [data]);
+
+  const w = 320, padL = 30, padB = 24, padT = 14, padR = 12;
+  const chartW = w - padL - padR, chartH = h - padB - padT;
+  const min = Math.min(...data, 0);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+
+  const points = data.map((v, i) => ({
+    x: padL + (i / (data.length - 1)) * chartW,
+    y: padT + chartH - ((v - min) / range) * chartH,
+    val: v,
+  }));
+
+  const visibleCount = Math.max(2, Math.ceil(points.length * progress));
+  const visPoints = points.slice(0, visibleCount);
+  const linePath = visPoints.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+  const areaPath = `${linePath} L ${visPoints[visPoints.length - 1].x} ${padT + chartH} L ${padL} ${padT + chartH} Z`;
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${w} ${h}`} style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {[0, 0.25, 0.5, 0.75, 1].map((g, i) => {
+        const y = padT + chartH * g;
+        const val = (max - range * g).toFixed(1);
+        return (
+          <g key={i}>
+            <line x1={padL} y1={y} x2={w - padR} y2={y} stroke={C.border} strokeWidth="1" />
+            <text x={padL - 6} y={y + 3} fill={C.muted} fontSize="8" textAnchor="end">{val}%</text>
+          </g>
+        );
+      })}
+      <path d={areaPath} fill="url(#lineGrad)" />
+      <path d={linePath} fill="none" stroke={color} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
+      {visPoints.map((p, i) => (
+        <g key={i}>
+          <circle cx={p.x} cy={p.y} r="3" fill={C.bg} stroke={color} strokeWidth="1.8" />
+          {progress >= 1 && (
+            <text x={p.x} y={p.y - 8} fill={C.text} fontSize="8.5" textAnchor="middle" fontWeight="600">{p.val}</text>
+          )}
+        </g>
+      ))}
+      {labels && points.map((p, i) => (
+        <text key={i} x={p.x} y={h - 8} fill={C.muted} fontSize="8.5" textAnchor="middle">{labels[i]}</text>
+      ))}
+    </svg>
   );
 }
 
@@ -516,10 +686,97 @@ function PageTransition({ children, pageKey }) {
   );
 }
 
+// ── Country Detail Modal ──────────────────────────────────────────────────────
+function CountryDetail({ countryKey, onClose }) {
+  const c = COUNTRY_DATA[countryKey];
+  if (!c) return null;
+
+  const latestGrowth = c.gdp_history[c.gdp_history.length - 1];
+
+  return (
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, background: "rgba(2,8,16,0.8)",
+      backdropFilter: "blur(6px)", zIndex: 200,
+      display: "flex", alignItems: "flex-start", justifyContent: "center",
+      padding: "20px 14px", overflowY: "auto",
+      animation: "fadeIn 0.25s ease",
+    }}>
+      <div onClick={e => e.stopPropagation()} className="scale-in" style={{
+        background: C.bgCard, border: `1px solid ${C.accent}40`,
+        borderTop: `3px solid ${C.accent}`, borderRadius: 16,
+        maxWidth: 460, width: "100%", padding: "22px 22px 26px",
+        marginTop: 20, marginBottom: 40,
+      }}>
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 18 }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <span style={{ fontSize: 38, lineHeight: 1 }}>{c.flag}</span>
+            <div>
+              <h2 style={{ color: C.text, fontSize: 20, fontWeight: 700, lineHeight: 1.1 }}>{c.name}</h2>
+              <div style={{ display: "flex", gap: 6, marginTop: 5, alignItems: "center" }}>
+                <Tag color={C.accent}>{c.gdp_rank} Economy</Tag>
+                <Tag color={C.gold}>{c.currency}</Tag>
+              </div>
+            </div>
+          </div>
+          <button onClick={onClose} className="btn-hover" style={{ background: C.border, border: "none", color: C.muted, cursor: "pointer", fontSize: 16, width: 32, height: 32, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>x</button>
+        </div>
+
+        {/* Summary */}
+        <p style={{ color: C.mutedLight, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>{c.summary}</p>
+
+        {/* Key stats grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 20 }}>
+          {[
+            ["GDP", c.gdp_total, C.accent],
+            ["Population", c.population, C.text],
+            ["GDP Growth", (latestGrowth >= 0 ? "+" : "") + latestGrowth + "%", latestGrowth >= 0 ? C.green : C.red],
+            ["Inflation", c.inflation + "%", C.gold],
+            ["Unemployment", c.unemployment + "%", C.mutedLight],
+            ["Interest Rate", c.interest_rate + "%", C.purple],
+          ].map(([label, val, col], i) => (
+            <div key={i} style={{ background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
+              <div style={{ color: col, fontSize: 15, fontWeight: 700, lineHeight: 1 }}>{val}</div>
+              <div style={{ color: C.muted, fontSize: 9.5, marginTop: 4, letterSpacing: 0.3 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* GDP History Chart */}
+        <div style={{ background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 12, padding: "14px 14px 8px", marginBottom: 20 }}>
+          <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 6 }}>📈 GDP Growth History</h3>
+          <AnimatedLineChart data={c.gdp_history} labels={c.years} color={C.accent} h={160} />
+        </div>
+
+        {/* Investable companies */}
+        <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>💼 Top Companies to Invest In</h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {c.companies.map((co, i) => (
+            <div key={i} className="fade-up" style={{ animationDelay: `${i * 60}ms`, display: "flex", justifyContent: "space-between", alignItems: "center", background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 14px" }}>
+              <div>
+                <div style={{ color: C.text, fontSize: 14, fontWeight: 600 }}>{co.name} <span style={{ color: C.muted, fontSize: 11, fontWeight: 400 }}>{co.ticker}</span></div>
+                <div style={{ color: C.muted, fontSize: 11, marginTop: 1 }}>{co.sector}</div>
+              </div>
+              <div style={{ color: co.change >= 0 ? C.green : C.red, fontSize: 13, fontWeight: 700 }}>
+                {co.change >= 0 ? "▲" : "▼"} {Math.abs(co.change)}%
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ color: C.muted, fontSize: 10, lineHeight: 1.5, marginTop: 16, textAlign: "center" }}>
+          Company data shown for educational purposes. Not financial advice.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── Markets Page ──────────────────────────────────────────────────────────────
 function MarketsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const key = "mkts_" + new Date().toDateString();
 
   useEffect(() => {
@@ -537,8 +794,13 @@ function MarketsPage() {
 
   if (loading) return <Loader text="Loading market data" />;
 
+  // Which GDP labels have country profiles
+  const clickable = (label) => COUNTRY_DATA[label] !== undefined;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {selectedCountry && <CountryDetail countryKey={selectedCountry} onClose={() => setSelectedCountry(null)} />}
+
       <div className="fade-up" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2 style={{ color: C.text, fontSize: 20, fontWeight: 700 }}>Global Markets</h2>
         <Tag>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</Tag>
@@ -579,12 +841,12 @@ function MarketsPage() {
         </Card>
         <Card className="fade-up" style={{ animationDelay: "370ms" }}>
           <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 14 }}>Commodities</h3>
-          {(data.commodities || []).map((c, i) => (
+          {(data.commodities || []).map((co, i) => (
             <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: i < (data.commodities?.length || 0) - 1 ? `1px solid ${C.border}` : "none" }}>
-              <span style={{ color: C.text, fontSize: 13, fontWeight: 500 }}>{c.name}</span>
+              <span style={{ color: C.text, fontSize: 13, fontWeight: 500 }}>{co.name}</span>
               <div style={{ textAlign: "right" }}>
-                <div style={{ color: C.text, fontSize: 13 }}>${(c.price || 0).toLocaleString()}</div>
-                <div style={{ color: (c.change || 0) >= 0 ? C.green : C.red, fontSize: 11 }}>{(c.change || 0) >= 0 ? "+" : ""}{c.change}%</div>
+                <div style={{ color: C.text, fontSize: 13 }}>${(co.price || 0).toLocaleString()}</div>
+                <div style={{ color: (co.change || 0) >= 0 ? C.green : C.red, fontSize: 11 }}>{(co.change || 0) >= 0 ? "+" : ""}{co.change}%</div>
               </div>
             </div>
           ))}
@@ -597,13 +859,59 @@ function MarketsPage() {
           <BarChart data={data.inflation || []} color={C.gold} />
         </Card>
         <Card className="fade-up" style={{ animationDelay: "510ms" }}>
-          <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 14 }}>GDP Growth %</h3>
-          <BarChart data={data.gdp_growth || []} color={C.accent} />
+          <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 4 }}>GDP Growth %</h3>
+          <p style={{ color: C.accent, fontSize: 10, marginBottom: 12 }}>👆 Tap a country for details</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {(data.gdp_growth || []).map((item, i) => {
+              const max = Math.max(...(data.gdp_growth || []).map(d => Math.abs(d.value)), 0.1);
+              const pct = (Math.abs(item.value) / max) * 100;
+              const neg = item.value < 0;
+              const canClick = clickable(item.label);
+              return (
+                <button key={i} onClick={() => canClick && setSelectedCountry(item.label)} className="fade-up"
+                  disabled={!canClick}
+                  style={{
+                    animationDelay: `${i * 60}ms`, display: "flex", alignItems: "center", gap: 8,
+                    background: "none", border: "none", padding: "2px 0", width: "100%",
+                    cursor: canClick ? "pointer" : "default", textAlign: "left",
+                    borderRadius: 4, transition: "background 0.15s",
+                  }}
+                  onMouseOver={e => canClick && (e.currentTarget.style.background = C.bgPanel)}
+                  onMouseOut={e => (e.currentTarget.style.background = "none")}>
+                  <span style={{ color: canClick ? C.accent : C.mutedLight, fontSize: 11, width: 48, textAlign: "right", flexShrink: 0, fontWeight: canClick ? 600 : 400, textDecoration: canClick ? "underline" : "none", textUnderlineOffset: 2 }}>{item.label}</span>
+                  <div style={{ flex: 1, background: C.border, borderRadius: 4, height: 16, overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: neg ? C.red : C.accent, borderRadius: 4, animation: "slideRight 0.8s ease both", "--w": `${pct}%` }} />
+                  </div>
+                  <span style={{ fontSize: 12, color: neg ? C.red : C.green, width: 46, flexShrink: 0 }}>{neg ? "" : "+"}{item.value.toFixed(1)}%</span>
+                </button>
+              );
+            })}
+          </div>
         </Card>
+      </div>
+
+      {/* Explore countries grid */}
+      <div className="fade-up" style={{ animationDelay: "560ms" }}>
+        <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 12 }}>🌍 Explore Economies</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 10 }}>
+          {Object.keys(COUNTRY_DATA).map((ck, i) => {
+            const c = COUNTRY_DATA[ck];
+            const g = c.gdp_history[c.gdp_history.length - 1];
+            return (
+              <button key={ck} onClick={() => setSelectedCountry(ck)} className="btn-hover card-hover fade-up"
+                style={{ animationDelay: `${600 + i * 50}ms`, background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 12, padding: "14px 10px", cursor: "pointer", textAlign: "center" }}>
+                <div style={{ fontSize: 28, marginBottom: 6 }}>{c.flag}</div>
+                <div style={{ color: C.text, fontSize: 12, fontWeight: 600 }}>{ck}</div>
+                <div style={{ color: g >= 0 ? C.green : C.red, fontSize: 11, fontWeight: 600, marginTop: 2 }}>{g >= 0 ? "+" : ""}{g}% GDP</div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
+
 
 // ── News Page ─────────────────────────────────────────────────────────────────
 function NewsPage() {
