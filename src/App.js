@@ -274,22 +274,20 @@ function SplashScreen({ onEnter }) {
   }, []);
 
   const symbols = [
-    { s: "$",  x: 5,  y: 10, size: 56, op: 0.06, dur: 7,  delay: 0   },
-    { s: "₿",  x: 87, y: 7,  size: 48, op: 0.07, dur: 9,  delay: 1.2 },
-    { s: "%",  x: 12, y: 68, size: 64, op: 0.05, dur: 8,  delay: 0.5 },
-    { s: "€",  x: 82, y: 62, size: 52, op: 0.06, dur: 11, delay: 2   },
-    { s: "£",  x: 2,  y: 40, size: 40, op: 0.05, dur: 6,  delay: 0.8 },
-    { s: "¥",  x: 91, y: 35, size: 44, op: 0.06, dur: 10, delay: 1.5 },
-    { s: "∑",  x: 72, y: 80, size: 50, op: 0.05, dur: 9,  delay: 0.3 },
-    { s: "∞",  x: 25, y: 85, size: 42, op: 0.06, dur: 8,  delay: 1.8 },
-    { s: "↗",  x: 48, y: 4,  size: 34, op: 0.07, dur: 7,  delay: 2.5 },
-    { s: "◈",  x: 58, y: 88, size: 30, op: 0.04, dur: 12, delay: 0.7 },
+    { s: "$",  x: 5,  y: 12, size: 52, op: 0.05, dur: 7,  delay: 0   },
+    { s: "₿",  x: 88, y: 9,  size: 46, op: 0.06, dur: 9,  delay: 1.2 },
+    { s: "%",  x: 10, y: 70, size: 58, op: 0.05, dur: 8,  delay: 0.5 },
+    { s: "€",  x: 84, y: 64, size: 50, op: 0.05, dur: 11, delay: 2   },
+    { s: "£",  x: 3,  y: 42, size: 38, op: 0.045,dur: 6,  delay: 0.8 },
+    { s: "¥",  x: 91, y: 36, size: 42, op: 0.05, dur: 10, delay: 1.5 },
+    { s: "∑",  x: 74, y: 82, size: 48, op: 0.045,dur: 9,  delay: 0.3 },
+    { s: "∞",  x: 24, y: 86, size: 40, op: 0.05, dur: 8,  delay: 1.8 },
   ];
 
   const tickerItems = ["S&P 500  ▲ 0.74%", "NASDAQ  ▲ 1.12%", "GOLD  ▲ 0.54%", "BTC  ▲ 2.31%", "EUR/USD  ▲ 0.18%", "FTSE  ▼ 0.31%", "OIL  ▼ 0.87%", "NIKKEI  ▲ 0.55%", "DAX  ▲ 0.22%", "SILVER  ▲ 1.04%"];
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(145deg, #020b18 0%, #040d1f 50%, #030810 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(145deg, #020b18 0%, #040d1f 50%, #030810 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", paddingBottom: 60 }}>
 
       <style>{`
         @keyframes floatSym {
@@ -297,10 +295,6 @@ function SplashScreen({ onEnter }) {
           33%  { transform: translateY(-18px) rotate(3deg); }
           66%  { transform: translateY(8px) rotate(-2deg); }
           100% { transform: translateY(0px) rotate(0deg); }
-        }
-        @keyframes splashFadeUp {
-          from { opacity: 0; transform: translateY(22px); }
-          to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes gradShift {
           0%,100% { background-position: 0% 50%; }
@@ -310,6 +304,10 @@ function SplashScreen({ onEnter }) {
           0%,100% { box-shadow: 0 4px 24px #0ea5e944; }
           50%     { box-shadow: 0 4px 48px #0ea5e988; }
         }
+        @keyframes electronSpin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
       `}</style>
 
       {/* Floating symbols */}
@@ -317,26 +315,22 @@ function SplashScreen({ onEnter }) {
         <div key={i} style={{
           position: "absolute",
           left: `${sym.x}%`, top: `${sym.y}%`,
-          fontSize: sym.size,
-          color: "#fff",
-          opacity: sym.op,
-          fontWeight: 700,
-          fontFamily: "Georgia, serif",
+          fontSize: sym.size, color: "#fff", opacity: sym.op,
+          fontWeight: 700, fontFamily: "Georgia, serif",
           animation: `floatSym ${sym.dur}s ease-in-out infinite ${sym.delay}s`,
-          userSelect: "none", pointerEvents: "none",
-          lineHeight: 1,
+          userSelect: "none", pointerEvents: "none", lineHeight: 1,
         }}>{sym.s}</div>
       ))}
 
-      {/* Radial glow */}
+      {/* Radial glows */}
       <div style={{ position: "absolute", top: "50%", left: "50%", width: 800, height: 800, borderRadius: "50%", background: `radial-gradient(circle, ${C.accent}0b 0%, transparent 55%)`, transform: "translate(-50%,-50%)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: "25%", left: "15%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, #7c3aed09 0%, transparent 60%)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: "15%", right: "10%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${C.gold}07 0%, transparent 60%)`, pointerEvents: "none" }} />
 
-      {/* Subtle dot grid */}
-      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.12, pointerEvents: "none" }}>
+      {/* Dot grid */}
+      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.1, pointerEvents: "none" }}>
         <defs>
-          <pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse">
+          <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
             <circle cx="1" cy="1" r="0.7" fill={C.accent} />
           </pattern>
         </defs>
@@ -347,32 +341,45 @@ function SplashScreen({ onEnter }) {
       <div style={{
         zIndex: 2, display: "flex", flexDirection: "column",
         alignItems: "center", textAlign: "center",
-        padding: "0 28px", maxWidth: 580, width: "100%",
+        padding: "24px 28px", maxWidth: 560, width: "100%",
       }}>
 
-        {/* Logo icon */}
+        {/* Atom logo + name */}
         <div style={{
           opacity: phase >= 1 ? 1 : 0,
           transform: phase >= 1 ? "scale(1)" : "scale(0.7)",
           transition: "all 0.7s cubic-bezier(.22,.68,0,1.2)",
-          marginBottom: 22,
-          animation: phase >= 1 ? "float 5s ease-in-out infinite 1s" : "none",
+          marginBottom: 14,
+          display: "flex", alignItems: "center", gap: 12,
         }}>
-          <div style={{
-            width: 68, height: 68, borderRadius: 18,
-            background: `linear-gradient(135deg, ${C.accent}28, ${C.accent}0d)`,
-            border: `1px solid ${C.accent}40`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            margin: "0 auto",
-            boxShadow: `0 0 32px ${C.accent}20`,
-          }}>
-            <svg width="38" height="38" viewBox="0 0 38 38">
-              <circle cx="19" cy="19" r="15" fill="none" stroke={C.accent} strokeWidth="1" opacity="0.45" />
-              <ellipse cx="19" cy="19" rx="8" ry="15" fill="none" stroke={C.accent} strokeWidth="0.9" opacity="0.55" />
-              <line x1="4" y1="19" x2="34" y2="19" stroke={C.accent} strokeWidth="0.7" opacity="0.35" />
-              <polyline points="7,26 13,18 19,22 26,12 32,9" fill="none" stroke={C.gold} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
-              <polygon points="29,6 34,11 29,13" fill={C.gold} />
+          {/* Atom with dollar sign */}
+          <div style={{ animation: phase >= 1 ? "float 5s ease-in-out infinite 1s" : "none" }}>
+            <svg width="54" height="54" viewBox="0 0 54 54">
+              <defs>
+                <radialGradient id="atomGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor={C.accent} stopOpacity="0.3" />
+                  <stop offset="100%" stopColor={C.accent} stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="27" cy="27" r="26" fill="url(#atomGlow)" />
+              {/* Three electron orbits */}
+              <g style={{ transformOrigin: "27px 27px" }}>
+                <ellipse cx="27" cy="27" rx="22" ry="9" fill="none" stroke={C.accent} strokeWidth="1.3" opacity="0.7" />
+                <ellipse cx="27" cy="27" rx="22" ry="9" fill="none" stroke={C.accent} strokeWidth="1.3" opacity="0.7" transform="rotate(60 27 27)" />
+                <ellipse cx="27" cy="27" rx="22" ry="9" fill="none" stroke={C.accent} strokeWidth="1.3" opacity="0.7" transform="rotate(120 27 27)" />
+              </g>
+              {/* Electrons */}
+              <circle cx="49" cy="27" r="2.2" fill={C.gold} />
+              <circle cx="16" cy="8.5" r="2.2" fill={C.accent2 || "#38bdf8"} />
+              <circle cx="16" cy="45.5" r="2.2" fill={C.accent2 || "#38bdf8"} />
+              {/* Dollar sign nucleus */}
+              <circle cx="27" cy="27" r="10" fill="#040d1f" stroke={C.gold} strokeWidth="1.2" />
+              <text x="27" y="32.5" fontSize="14" fontWeight="800" fill={C.gold} textAnchor="middle" fontFamily="Georgia, serif">$</text>
             </svg>
+          </div>
+          {/* Name */}
+          <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 26, fontWeight: 800, letterSpacing: -0.5, lineHeight: 1 }}>
+            <span style={{ color: "#fff" }}>Econ</span><span style={{ color: C.accent }}>Globe</span>
           </div>
         </div>
 
@@ -381,7 +388,7 @@ function SplashScreen({ onEnter }) {
           opacity: phase >= 1 ? 1 : 0, transition: "opacity 0.6s ease 0.3s",
           display: "inline-flex", alignItems: "center", gap: 6,
           background: `${C.green}15`, border: `1px solid ${C.green}40`,
-          borderRadius: 20, padding: "5px 14px", marginBottom: 20,
+          borderRadius: 20, padding: "5px 14px", marginBottom: 22,
         }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.green, animation: "pulse 2s infinite" }} />
           <span style={{ color: C.green, fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Live Global Data</span>
@@ -393,7 +400,7 @@ function SplashScreen({ onEnter }) {
           transform: phase >= 1 ? "translateY(0)" : "translateY(20px)",
           transition: "all 0.8s cubic-bezier(.22,.68,0,1.2) 0.15s",
           fontFamily: "'Syne', sans-serif",
-          fontSize: "clamp(36px, 7vw, 64px)",
+          fontSize: "clamp(34px, 6.5vw, 58px)",
           fontWeight: 800, lineHeight: 1.08,
           letterSpacing: -1.5, margin: "0 0 16px",
         }}>
@@ -412,26 +419,26 @@ function SplashScreen({ onEnter }) {
           opacity: phase >= 2 ? 1 : 0,
           transform: phase >= 2 ? "translateY(0)" : "translateY(14px)",
           transition: "all 0.7s ease 0.1s",
-          color: C.mutedLight, fontSize: 15, lineHeight: 1.7,
-          margin: "0 0 32px", maxWidth: 420,
+          color: C.mutedLight, fontSize: 15, lineHeight: 1.65,
+          margin: "0 0 30px", maxWidth: 400,
         }}>
           Markets, news, investment picks and economic insights — refreshed every day by AI.
         </p>
 
-        {/* Stats row — compact */}
+        {/* Stats row */}
         <div style={{
           opacity: phase >= 2 ? 1 : 0, transition: "opacity 0.7s ease 0.2s",
           display: "flex", gap: 8, justifyContent: "center",
-          marginBottom: 36, flexWrap: "wrap",
+          marginBottom: 32, flexWrap: "wrap",
         }}>
           {[["180+", "Markets"], ["24/7", "Updates"], ["50+", "Indicators"], ["40+", "Countries"]].map(([val, lbl], i) => (
             <div key={i} style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 10, padding: "10px 16px", textAlign: "center", minWidth: 76,
+              borderRadius: 10, padding: "9px 15px", textAlign: "center", minWidth: 72,
             }}>
-              <div style={{ color: C.accent, fontSize: 18, fontWeight: 800, lineHeight: 1 }}>{val}</div>
-              <div style={{ color: C.muted, fontSize: 10, marginTop: 3, letterSpacing: 0.4 }}>{lbl}</div>
+              <div style={{ color: C.accent, fontSize: 17, fontWeight: 800, lineHeight: 1 }}>{val}</div>
+              <div style={{ color: C.muted, fontSize: 9.5, marginTop: 3, letterSpacing: 0.4 }}>{lbl}</div>
             </div>
           ))}
         </div>
@@ -443,44 +450,40 @@ function SplashScreen({ onEnter }) {
           onMouseLeave={() => setHovered(false)}
           style={{
             opacity: phase >= 3 ? 1 : 0,
-            transform: phase >= 3 ? "translateY(0)" : "translateY(10px)",
-            transition: "opacity 0.5s ease, transform 0.5s ease",
+            transition: "opacity 0.5s ease, box-shadow 0.2s ease, transform 0.2s ease",
             background: `linear-gradient(135deg, ${C.accent}, #0284c7)`,
             border: "none", borderRadius: 14, color: "#fff",
-            fontSize: 16, fontWeight: 700,
-            padding: "15px 48px",
+            fontSize: 16, fontWeight: 700, padding: "15px 48px",
             cursor: "pointer", letterSpacing: 0.3,
             display: "inline-flex", alignItems: "center", gap: 10,
             boxShadow: hovered ? `0 8px 40px ${C.accent}70` : `0 4px 28px ${C.accent}45`,
-            transform: phase >= 3 ? (hovered ? "translateY(-2px) scale(1.03)" : "translateY(0)") : "translateY(10px)",
-            animation: phase >= 3 ? "btnGlow 3s ease-in-out infinite" : "none",
+            transform: hovered ? "translateY(-2px) scale(1.03)" : "translateY(0)",
+            marginBottom: 12,
           }}>
           Enter Dashboard
           <span style={{ fontSize: 17, transition: "transform 0.2s", display: "inline-block", transform: hovered ? "translateX(5px)" : "none" }}>→</span>
         </button>
 
+        {/* Helper text + chips together, below button — no overlap */}
         <p style={{
-          opacity: phase >= 3 ? 1 : 0, transition: "opacity 0.5s ease 0.2s",
-          color: C.muted, fontSize: 11, marginTop: 12, letterSpacing: 0.4,
+          opacity: phase >= 3 ? 1 : 0, transition: "opacity 0.5s ease 0.15s",
+          color: C.muted, fontSize: 11, margin: "0 0 18px", letterSpacing: 0.4,
         }}>Free · Updates daily · No sign-up needed</p>
 
-      </div>
+        <div style={{
+          opacity: phase >= 3 ? 1 : 0, transition: "opacity 0.6s ease 0.25s",
+          display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap",
+        }}>
+          {["📈 Markets", "📰 News", "📚 Glossary", "💎 Invest"].map((f, i) => (
+            <div key={i} style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.09)",
+              borderRadius: 20, padding: "5px 12px",
+              color: C.mutedLight, fontSize: 11, fontWeight: 500,
+            }}>{f}</div>
+          ))}
+        </div>
 
-      {/* Bottom feature chips */}
-      <div style={{
-        position: "absolute", bottom: 42, left: 0, right: 0,
-        opacity: phase >= 3 ? 1 : 0, transition: "opacity 0.8s ease 0.4s",
-        display: "flex", justifyContent: "center", gap: 8,
-        flexWrap: "wrap", padding: "0 16px",
-      }}>
-        {["📈 Markets", "📰 News", "📚 Glossary", "💎 Invest"].map((f, i) => (
-          <div key={i} style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.09)",
-            borderRadius: 20, padding: "5px 12px",
-            color: C.mutedLight, fontSize: 11, fontWeight: 500,
-          }}>{f}</div>
-        ))}
       </div>
 
       {/* Ticker tape */}
