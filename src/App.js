@@ -264,130 +264,243 @@ function RadarChart({ segments }) {
 
 // ── Splash Screen ─────────────────────────────────────────────────────────────
 function SplashScreen({ onEnter }) {
-  const [phase, setPhase] = useState(0); // 0=hidden 1=logo 2=text 3=button
+  const [phase, setPhase] = useState(0);
+  const [hovered, setHovered] = useState(false);
+
   useEffect(() => {
-    setTimeout(() => setPhase(1), 150);
-    setTimeout(() => setPhase(2), 800);
-    setTimeout(() => setPhase(3), 1500);
+    setTimeout(() => setPhase(1), 100);
+    setTimeout(() => setPhase(2), 700);
+    setTimeout(() => setPhase(3), 1300);
   }, []);
 
-  const tickerItems = ["S&P 500  ▲ 0.74%", "NASDAQ  ▲ 1.12%", "GOLD  ▲ 0.54%", "BTC  ▲ 2.31%", "EUR/USD  ▲ 0.18%", "FTSE  ▼ 0.31%", "OIL  ▼ 0.87%", "NIKKEI  ▲ 0.55%"];
+  const symbols = [
+    { s: "$",  x: 5,  y: 10, size: 56, op: 0.06, dur: 7,  delay: 0   },
+    { s: "₿",  x: 87, y: 7,  size: 48, op: 0.07, dur: 9,  delay: 1.2 },
+    { s: "%",  x: 12, y: 68, size: 64, op: 0.05, dur: 8,  delay: 0.5 },
+    { s: "€",  x: 82, y: 62, size: 52, op: 0.06, dur: 11, delay: 2   },
+    { s: "£",  x: 2,  y: 40, size: 40, op: 0.05, dur: 6,  delay: 0.8 },
+    { s: "¥",  x: 91, y: 35, size: 44, op: 0.06, dur: 10, delay: 1.5 },
+    { s: "∑",  x: 72, y: 80, size: 50, op: 0.05, dur: 9,  delay: 0.3 },
+    { s: "∞",  x: 25, y: 85, size: 42, op: 0.06, dur: 8,  delay: 1.8 },
+    { s: "↗",  x: 48, y: 4,  size: 34, op: 0.07, dur: 7,  delay: 2.5 },
+    { s: "◈",  x: 58, y: 88, size: 30, op: 0.04, dur: 12, delay: 0.7 },
+  ];
+
+  const tickerItems = ["S&P 500  ▲ 0.74%", "NASDAQ  ▲ 1.12%", "GOLD  ▲ 0.54%", "BTC  ▲ 2.31%", "EUR/USD  ▲ 0.18%", "FTSE  ▼ 0.31%", "OIL  ▼ 0.87%", "NIKKEI  ▲ 0.55%", "DAX  ▲ 0.22%", "SILVER  ▲ 1.04%"];
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
-      {/* Grid BG */}
-      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.06 }}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(145deg, #020b18 0%, #040d1f 50%, #030810 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+
+      <style>{`
+        @keyframes floatSym {
+          0%   { transform: translateY(0px) rotate(0deg); }
+          33%  { transform: translateY(-18px) rotate(3deg); }
+          66%  { transform: translateY(8px) rotate(-2deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes splashFadeUp {
+          from { opacity: 0; transform: translateY(22px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gradShift {
+          0%,100% { background-position: 0% 50%; }
+          50%     { background-position: 100% 50%; }
+        }
+        @keyframes btnGlow {
+          0%,100% { box-shadow: 0 4px 24px #0ea5e944; }
+          50%     { box-shadow: 0 4px 48px #0ea5e988; }
+        }
+      `}</style>
+
+      {/* Floating symbols */}
+      {symbols.map((sym, i) => (
+        <div key={i} style={{
+          position: "absolute",
+          left: `${sym.x}%`, top: `${sym.y}%`,
+          fontSize: sym.size,
+          color: "#fff",
+          opacity: sym.op,
+          fontWeight: 700,
+          fontFamily: "Georgia, serif",
+          animation: `floatSym ${sym.dur}s ease-in-out infinite ${sym.delay}s`,
+          userSelect: "none", pointerEvents: "none",
+          lineHeight: 1,
+        }}>{sym.s}</div>
+      ))}
+
+      {/* Radial glow */}
+      <div style={{ position: "absolute", top: "50%", left: "50%", width: 800, height: 800, borderRadius: "50%", background: `radial-gradient(circle, ${C.accent}0b 0%, transparent 55%)`, transform: "translate(-50%,-50%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "25%", left: "15%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, #7c3aed09 0%, transparent 60%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "15%", right: "10%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${C.gold}07 0%, transparent 60%)`, pointerEvents: "none" }} />
+
+      {/* Subtle dot grid */}
+      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.12, pointerEvents: "none" }}>
         <defs>
-          <pattern id="g" width="50" height="50" patternUnits="userSpaceOnUse">
-            <path d="M 50 0 L 0 0 0 50" fill="none" stroke={C.accent} strokeWidth="0.5" />
+          <pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.7" fill={C.accent} />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#g)" />
+        <rect width="100%" height="100%" fill="url(#dots)" />
       </svg>
 
-      {/* Ambient orbs */}
-      <div style={{ position: "absolute", top: "10%", left: "8%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${C.accent}14 0%, transparent 65%)`, animation: "pulse 5s ease-in-out infinite" }} />
-      <div style={{ position: "absolute", bottom: "8%", right: "5%", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${C.gold}0f 0%, transparent 65%)`, animation: "pulse 7s ease-in-out infinite 2s" }} />
-      <div style={{ position: "absolute", top: "50%", left: "50%", width: 600, height: 600, borderRadius: "50%", background: `radial-gradient(circle, ${C.accent}08 0%, transparent 55%)`, transform: "translate(-50%,-50%)" }} />
+      {/* ── Main content ── */}
+      <div style={{
+        zIndex: 2, display: "flex", flexDirection: "column",
+        alignItems: "center", textAlign: "center",
+        padding: "0 28px", maxWidth: 580, width: "100%",
+      }}>
 
-      {/* Rotating orbit ring */}
-      <div style={{ position: "absolute", top: "50%", left: "50%", width: 280, height: 280, borderRadius: "50%", border: `1px solid ${C.accent}18`, transform: "translate(-50%,-50%)", animation: "orbitSlow 20s linear infinite" }}>
-        <div style={{ position: "absolute", top: -3, left: "50%", width: 6, height: 6, borderRadius: "50%", background: C.accent, transform: "translateX(-50%)", boxShadow: `0 0 8px ${C.accent}` }} />
-      </div>
-      <div style={{ position: "absolute", top: "50%", left: "50%", width: 360, height: 360, borderRadius: "50%", border: `1px solid ${C.gold}10`, transform: "translate(-50%,-50%)", animation: "orbitSlow 30s linear infinite reverse" }}>
-        <div style={{ position: "absolute", bottom: -3, right: "30%", width: 5, height: 5, borderRadius: "50%", background: C.gold, boxShadow: `0 0 6px ${C.gold}` }} />
-      </div>
-
-      {/* Logo */}
-      <div style={{ opacity: phase >= 1 ? 1 : 0, transform: phase >= 1 ? "translateY(0) scale(1)" : "translateY(30px) scale(0.9)", transition: "all 0.9s cubic-bezier(.22,.68,0,1.2)", textAlign: "center", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
-
-        {/* SVG Globe Logo */}
-        <div style={{ animation: "float 4s ease-in-out infinite", marginBottom: 28 }}>
-          <svg width="110" height="110" viewBox="0 0 110 110">
-            <defs>
-              <radialGradient id="glo" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor={C.accent} stopOpacity="0.25" />
-                <stop offset="100%" stopColor={C.bg} stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            {/* Outer glow */}
-            <circle cx="55" cy="55" r="52" fill="url(#glo)" />
-            {/* Outer ring */}
-            <circle cx="55" cy="55" r="50" fill="none" stroke={C.accent} strokeWidth="0.75" opacity="0.4" />
-            {/* Inner ring */}
-            <circle cx="55" cy="55" r="38" fill="none" stroke={C.border} strokeWidth="1" />
-            {/* Globe meridians */}
-            <ellipse cx="55" cy="55" rx="27" ry="38" fill="none" stroke={C.accent} strokeWidth="1" opacity="0.55" />
-            <ellipse cx="55" cy="55" rx="14" ry="38" fill="none" stroke={C.accent} strokeWidth="0.5" opacity="0.3" />
-            {/* Parallels */}
-            <line x1="17" y1="55" x2="93" y2="55" stroke={C.accent} strokeWidth="0.5" opacity="0.35" />
-            <ellipse cx="55" cy="55" rx="30" ry="12" fill="none" stroke={C.accent} strokeWidth="0.5" opacity="0.25" />
-            <ellipse cx="55" cy="37" rx="22" ry="8" fill="none" stroke={C.accent} strokeWidth="0.4" opacity="0.2" />
-            {/* Gold trend arrow */}
-            <polyline points="24,70 38,53 51,61 70,40 86,34" fill="none" stroke={C.gold} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-            <polygon points="82,29 90,37 82,40" fill={C.gold} />
-            {/* Pulse dots */}
-            <circle cx="38" cy="53" r="2.5" fill={C.accent} opacity="0.7" />
-            <circle cx="70" cy="40" r="2.5" fill={C.gold} opacity="0.8" />
-          </svg>
-        </div>
-
-        {/* Brand name */}
-        <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 52, fontWeight: 800, letterSpacing: -2, lineHeight: 1, marginBottom: 10 }}>
-          <span style={{ color: C.text }}>ECON</span><span style={{ color: C.accent }}>GLOBE</span>
-        </div>
-
-        {/* Slogan */}
+        {/* Logo icon */}
         <div style={{
-          opacity: phase >= 2 ? 1 : 0, transform: phase >= 2 ? "translateY(0)" : "translateY(12px)",
+          opacity: phase >= 1 ? 1 : 0,
+          transform: phase >= 1 ? "scale(1)" : "scale(0.7)",
+          transition: "all 0.7s cubic-bezier(.22,.68,0,1.2)",
+          marginBottom: 22,
+          animation: phase >= 1 ? "float 5s ease-in-out infinite 1s" : "none",
+        }}>
+          <div style={{
+            width: 68, height: 68, borderRadius: 18,
+            background: `linear-gradient(135deg, ${C.accent}28, ${C.accent}0d)`,
+            border: `1px solid ${C.accent}40`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            margin: "0 auto",
+            boxShadow: `0 0 32px ${C.accent}20`,
+          }}>
+            <svg width="38" height="38" viewBox="0 0 38 38">
+              <circle cx="19" cy="19" r="15" fill="none" stroke={C.accent} strokeWidth="1" opacity="0.45" />
+              <ellipse cx="19" cy="19" rx="8" ry="15" fill="none" stroke={C.accent} strokeWidth="0.9" opacity="0.55" />
+              <line x1="4" y1="19" x2="34" y2="19" stroke={C.accent} strokeWidth="0.7" opacity="0.35" />
+              <polyline points="7,26 13,18 19,22 26,12 32,9" fill="none" stroke={C.gold} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
+              <polygon points="29,6 34,11 29,13" fill={C.gold} />
+            </svg>
+          </div>
+        </div>
+
+        {/* Live badge */}
+        <div style={{
+          opacity: phase >= 1 ? 1 : 0, transition: "opacity 0.6s ease 0.3s",
+          display: "inline-flex", alignItems: "center", gap: 6,
+          background: `${C.green}15`, border: `1px solid ${C.green}40`,
+          borderRadius: 20, padding: "5px 14px", marginBottom: 20,
+        }}>
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.green, animation: "pulse 2s infinite" }} />
+          <span style={{ color: C.green, fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Live Global Data</span>
+        </div>
+
+        {/* Headline */}
+        <h1 style={{
+          opacity: phase >= 1 ? 1 : 0,
+          transform: phase >= 1 ? "translateY(0)" : "translateY(20px)",
+          transition: "all 0.8s cubic-bezier(.22,.68,0,1.2) 0.15s",
+          fontFamily: "'Syne', sans-serif",
+          fontSize: "clamp(36px, 7vw, 64px)",
+          fontWeight: 800, lineHeight: 1.08,
+          letterSpacing: -1.5, margin: "0 0 16px",
+        }}>
+          <span style={{ color: "#fff" }}>Global Economy,</span><br />
+          <span style={{
+            background: `linear-gradient(90deg, ${C.accent}, #38bdf8, ${C.gold})`,
+            backgroundSize: "200% 200%",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            animation: "gradShift 4s ease infinite",
+          }}>Decoded Daily.</span>
+        </h1>
+
+        {/* Subtitle */}
+        <p style={{
+          opacity: phase >= 2 ? 1 : 0,
+          transform: phase >= 2 ? "translateY(0)" : "translateY(14px)",
           transition: "all 0.7s ease 0.1s",
-          color: C.mutedLight, fontSize: 14, letterSpacing: 3.5, textTransform: "uppercase",
-          marginBottom: 40, animation: phase >= 2 ? "shimmer 3s ease-in-out infinite 2s" : "none"
+          color: C.mutedLight, fontSize: 15, lineHeight: 1.7,
+          margin: "0 0 32px", maxWidth: 420,
         }}>
-          Your World. Your Wealth. Decoded Daily.
-        </div>
+          Markets, news, investment picks and economic insights — refreshed every day by AI.
+        </p>
 
-        {/* Feature pills */}
+        {/* Stats row — compact */}
         <div style={{
-          opacity: phase >= 2 ? 1 : 0, transition: "opacity 0.7s ease 0.3s",
-          display: "flex", gap: 16, justifyContent: "center", marginBottom: 48, flexWrap: "wrap"
+          opacity: phase >= 2 ? 1 : 0, transition: "opacity 0.7s ease 0.2s",
+          display: "flex", gap: 8, justifyContent: "center",
+          marginBottom: 36, flexWrap: "wrap",
         }}>
-          {["📡 Live Markets", "🤖 AI Analysis", "💎 Smart Picks", "📰 Daily News"].map((f, i) => (
+          {[["180+", "Markets"], ["24/7", "Updates"], ["50+", "Indicators"], ["40+", "Countries"]].map(([val, lbl], i) => (
             <div key={i} style={{
-              background: C.border, border: `1px solid ${C.borderHover}`,
-              borderRadius: 20, padding: "6px 14px", color: C.mutedLight, fontSize: 12
-            }}>{f}</div>
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 10, padding: "10px 16px", textAlign: "center", minWidth: 76,
+            }}>
+              <div style={{ color: C.accent, fontSize: 18, fontWeight: 800, lineHeight: 1 }}>{val}</div>
+              <div style={{ color: C.muted, fontSize: 10, marginTop: 3, letterSpacing: 0.4 }}>{lbl}</div>
+            </div>
           ))}
         </div>
 
-        {/* CTA Button */}
+        {/* CTA */}
         <button
           onClick={onEnter}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
           style={{
-            opacity: phase >= 3 ? 1 : 0, transform: phase >= 3 ? "translateY(0)" : "translateY(10px)",
-            transition: "opacity 0.6s ease, transform 0.6s ease",
-            background: C.accent, border: "none", borderRadius: 12,
-            color: "#fff", fontSize: 16, fontWeight: 700,
-            padding: "15px 52px", cursor: "pointer", letterSpacing: 0.5,
-            boxShadow: `0 4px 24px ${C.accent}50`,
-          }}
-          className="btn-hover"
-        >
-          Enter Dashboard →
+            opacity: phase >= 3 ? 1 : 0,
+            transform: phase >= 3 ? "translateY(0)" : "translateY(10px)",
+            transition: "opacity 0.5s ease, transform 0.5s ease",
+            background: `linear-gradient(135deg, ${C.accent}, #0284c7)`,
+            border: "none", borderRadius: 14, color: "#fff",
+            fontSize: 16, fontWeight: 700,
+            padding: "15px 48px",
+            cursor: "pointer", letterSpacing: 0.3,
+            display: "inline-flex", alignItems: "center", gap: 10,
+            boxShadow: hovered ? `0 8px 40px ${C.accent}70` : `0 4px 28px ${C.accent}45`,
+            transform: phase >= 3 ? (hovered ? "translateY(-2px) scale(1.03)" : "translateY(0)") : "translateY(10px)",
+            animation: phase >= 3 ? "btnGlow 3s ease-in-out infinite" : "none",
+          }}>
+          Enter Dashboard
+          <span style={{ fontSize: 17, transition: "transform 0.2s", display: "inline-block", transform: hovered ? "translateX(5px)" : "none" }}>→</span>
         </button>
+
+        <p style={{
+          opacity: phase >= 3 ? 1 : 0, transition: "opacity 0.5s ease 0.2s",
+          color: C.muted, fontSize: 11, marginTop: 12, letterSpacing: 0.4,
+        }}>Free · Updates daily · No sign-up needed</p>
+
+      </div>
+
+      {/* Bottom feature chips */}
+      <div style={{
+        position: "absolute", bottom: 42, left: 0, right: 0,
+        opacity: phase >= 3 ? 1 : 0, transition: "opacity 0.8s ease 0.4s",
+        display: "flex", justifyContent: "center", gap: 8,
+        flexWrap: "wrap", padding: "0 16px",
+      }}>
+        {["📈 Markets", "📰 News", "📚 Glossary", "💎 Invest"].map((f, i) => (
+          <div key={i} style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.09)",
+            borderRadius: 20, padding: "5px 12px",
+            color: C.mutedLight, fontSize: 11, fontWeight: 500,
+          }}>{f}</div>
+        ))}
       </div>
 
       {/* Ticker tape */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: C.bgCard, borderTop: `1px solid ${C.border}`, height: 36, overflow: "hidden", display: "flex", alignItems: "center" }}>
-        <div style={{ display: "flex", gap: 48, animation: "ticker 30s linear infinite", whiteSpace: "nowrap" }}>
-          {[...tickerItems, ...tickerItems].map((t, i) => (
-            <span key={i} style={{ color: i % 3 === 0 ? C.green : i % 3 === 1 ? C.red : C.mutedLight, fontSize: 11, fontWeight: 600, letterSpacing: 0.5 }}>{t}</span>
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        background: "rgba(2,8,16,0.7)", borderTop: `1px solid ${C.border}`,
+        height: 32, overflow: "hidden", display: "flex", alignItems: "center",
+        backdropFilter: "blur(12px)",
+      }}>
+        <div style={{ display: "flex", gap: 52, animation: "ticker 22s linear infinite", whiteSpace: "nowrap" }}>
+          {[...tickerItems, ...tickerItems, ...tickerItems].map((t, i) => (
+            <span key={i} style={{ color: t.includes("▲") ? C.green : C.red, fontSize: 10, fontWeight: 600, letterSpacing: 0.8 }}>{t}</span>
           ))}
         </div>
       </div>
+
     </div>
   );
 }
+
 
 // ── Page transition wrapper ───────────────────────────────────────────────────
 function PageTransition({ children, pageKey }) {
