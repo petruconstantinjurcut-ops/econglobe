@@ -89,7 +89,7 @@ const FALLBACK_MARKETS = {
 // ── Country profile data (for clickable Markets countries) ────────────────────
 const COUNTRY_DATA = {
   USA: {
-    flag: "🇺🇸", name: "United States", currency: "USD",
+    flag: "🇺🇸", name: "United States", currency: "USD", mapX: 19, mapY: 40,
     gdp_total: "$27.4T", gdp_rank: "#1", population: "335M",
     gdp_history: [2.3, 5.8, 1.9, 2.5, 2.8, 2.5],
     years: ["2020", "2021", "2022", "2023", "2024", "2025"],
@@ -104,7 +104,7 @@ const COUNTRY_DATA = {
     ],
   },
   China: {
-    flag: "🇨🇳", name: "China", currency: "CNY",
+    flag: "🇨🇳", name: "China", currency: "CNY", mapX: 73, mapY: 42,
     gdp_total: "$18.5T", gdp_rank: "#2", population: "1.41B",
     gdp_history: [2.2, 8.4, 3.0, 5.2, 4.8, 4.8],
     years: ["2020", "2021", "2022", "2023", "2024", "2025"],
@@ -119,7 +119,7 @@ const COUNTRY_DATA = {
     ],
   },
   India: {
-    flag: "🇮🇳", name: "India", currency: "INR",
+    flag: "🇮🇳", name: "India", currency: "INR", mapX: 68, mapY: 50,
     gdp_total: "$3.9T", gdp_rank: "#5", population: "1.43B",
     gdp_history: [-5.8, 9.1, 7.0, 7.8, 6.9, 6.9],
     years: ["2020", "2021", "2022", "2023", "2024", "2025"],
@@ -134,7 +134,7 @@ const COUNTRY_DATA = {
     ],
   },
   EU: {
-    flag: "🇪🇺", name: "European Union", currency: "EUR",
+    flag: "🇪🇺", name: "European Union", currency: "EUR", mapX: 49, mapY: 33,
     gdp_total: "$18.3T", gdp_rank: "#3", population: "448M",
     gdp_history: [-5.6, 5.9, 3.4, 0.4, 0.6, 0.6],
     years: ["2020", "2021", "2022", "2023", "2024", "2025"],
@@ -149,7 +149,7 @@ const COUNTRY_DATA = {
     ],
   },
   UK: {
-    flag: "🇬🇧", name: "United Kingdom", currency: "GBP",
+    flag: "🇬🇧", name: "United Kingdom", currency: "GBP", mapX: 46, mapY: 30,
     gdp_total: "$3.3T", gdp_rank: "#6", population: "67M",
     gdp_history: [-10.4, 8.7, 4.3, 0.1, -0.2, -0.2],
     years: ["2020", "2021", "2022", "2023", "2024", "2025"],
@@ -164,7 +164,7 @@ const COUNTRY_DATA = {
     ],
   },
   Japan: {
-    flag: "🇯🇵", name: "Japan", currency: "JPY",
+    flag: "🇯🇵", name: "Japan", currency: "JPY", mapX: 83, mapY: 41,
     gdp_total: "$4.2T", gdp_rank: "#4", population: "124M",
     gdp_history: [-4.5, 2.6, 1.0, 1.9, 0.4, 0.4],
     years: ["2020", "2021", "2022", "2023", "2024", "2025"],
@@ -179,7 +179,7 @@ const COUNTRY_DATA = {
     ],
   },
   Brazil: {
-    flag: "🇧🇷", name: "Brazil", currency: "BRL",
+    flag: "🇧🇷", name: "Brazil", currency: "BRL", mapX: 33, mapY: 68,
     gdp_total: "$2.2T", gdp_rank: "#9", population: "216M",
     gdp_history: [-3.3, 5.0, 3.0, 2.9, 2.5, 2.5],
     years: ["2020", "2021", "2022", "2023", "2024", "2025"],
@@ -772,6 +772,82 @@ function CountryDetail({ countryKey, onClose }) {
   );
 }
 
+// ── Interactive World Map ─────────────────────────────────────────────────────
+function WorldMap({ onSelect }) {
+  const [hovered, setHovered] = useState(null);
+
+  // Simplified continent silhouettes (stylized, not geographically perfect)
+  const continents = [
+    // North America
+    "M 60 70 L 130 55 L 175 70 L 185 110 L 160 145 L 130 165 L 110 150 L 95 120 L 70 110 Z",
+    // South America
+    "M 165 195 L 195 185 L 215 210 L 210 260 L 185 295 L 165 280 L 160 230 Z",
+    // Europe
+    "M 320 70 L 370 60 L 400 75 L 395 105 L 360 115 L 330 100 Z",
+    // Africa
+    "M 330 130 L 400 125 L 425 165 L 415 230 L 380 270 L 355 240 L 340 180 Z",
+    // Asia
+    "M 410 60 L 540 50 L 600 75 L 610 130 L 560 155 L 490 140 L 430 120 L 405 90 Z",
+    // Australia
+    "M 560 230 L 615 225 L 635 255 L 615 280 L 570 275 L 555 250 Z",
+  ];
+
+  return (
+    <svg viewBox="0 0 680 320" width="100%" style={{ display: "block" }}>
+      <defs>
+        <radialGradient id="pointGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={C.accent} stopOpacity="0.6" />
+          <stop offset="100%" stopColor={C.accent} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Subtle lat/long grid */}
+      {[80, 160, 240].map((y, i) => <line key={"h" + i} x1="0" y1={y} x2="680" y2={y} stroke={C.border} strokeWidth="0.5" opacity="0.4" />)}
+      {[170, 340, 510].map((x, i) => <line key={"v" + i} x1={x} y1="0" x2={x} y2="320" stroke={C.border} strokeWidth="0.5" opacity="0.4" />)}
+
+      {/* Continents */}
+      {continents.map((d, i) => (
+        <path key={i} d={d} fill={C.border} stroke={C.borderHover} strokeWidth="1" opacity="0.55" />
+      ))}
+
+      {/* Country points */}
+      {Object.keys(COUNTRY_DATA).map((ck) => {
+        const c = COUNTRY_DATA[ck];
+        const x = (c.mapX / 100) * 680;
+        const y = (c.mapY / 100) * 320;
+        const g = c.gdp_history[c.gdp_history.length - 1];
+        const col = g >= 0 ? C.green : C.red;
+        const isHov = hovered === ck;
+        return (
+          <g key={ck} style={{ cursor: "pointer" }}
+            onClick={() => onSelect(ck)}
+            onMouseEnter={() => setHovered(ck)}
+            onMouseLeave={() => setHovered(null)}>
+            {/* Glow halo */}
+            <circle cx={x} cy={y} r={isHov ? 26 : 20} fill="url(#pointGlow)" style={{ transition: "r 0.2s" }} />
+            {/* Pulsing ring */}
+            <circle cx={x} cy={y} r="10" fill="none" stroke={col} strokeWidth="1.2" opacity="0.5">
+              <animate attributeName="r" values="8;16;8" dur="2.5s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.6;0;0.6" dur="2.5s" repeatCount="indefinite" />
+            </circle>
+            {/* Core dot */}
+            <circle cx={x} cy={y} r={isHov ? 7 : 5.5} fill={col} stroke="#fff" strokeWidth="1.2" style={{ transition: "r 0.2s" }} />
+            {/* Flag + label */}
+            <text x={x} y={y - 16} fontSize={isHov ? 18 : 15} textAnchor="middle" style={{ transition: "font-size 0.2s" }}>{c.flag}</text>
+            {isHov && (
+              <g>
+                <rect x={x - 40} y={y + 12} width="80" height="30" rx="6" fill="#040d1f" stroke={C.accent} strokeWidth="1" />
+                <text x={x} y={y + 25} fontSize="10" fill={C.text} textAnchor="middle" fontWeight="700">{c.name}</text>
+                <text x={x} y={y + 37} fontSize="9" fill={col} textAnchor="middle" fontWeight="600">{g >= 0 ? "+" : ""}{g}% GDP</text>
+              </g>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 // ── Markets Page ──────────────────────────────────────────────────────────────
 function MarketsPage() {
   const [data, setData] = useState(null);
@@ -890,27 +966,19 @@ function MarketsPage() {
         </Card>
       </div>
 
-      {/* Explore countries grid */}
+      {/* Interactive World Map */}
       <div className="fade-up" style={{ animationDelay: "560ms" }}>
-        <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 12 }}>🌍 Explore Economies</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 10 }}>
-          {Object.keys(COUNTRY_DATA).map((ck, i) => {
-            const c = COUNTRY_DATA[ck];
-            const g = c.gdp_history[c.gdp_history.length - 1];
-            return (
-              <button key={ck} onClick={() => setSelectedCountry(ck)} className="btn-hover card-hover fade-up"
-                style={{ animationDelay: `${600 + i * 50}ms`, background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 12, padding: "14px 10px", cursor: "pointer", textAlign: "center" }}>
-                <div style={{ fontSize: 28, marginBottom: 6 }}>{c.flag}</div>
-                <div style={{ color: C.text, fontSize: 12, fontWeight: 600 }}>{ck}</div>
-                <div style={{ color: g >= 0 ? C.green : C.red, fontSize: 11, fontWeight: 600, marginTop: 2 }}>{g >= 0 ? "+" : ""}{g}% GDP</div>
-              </button>
-            );
-          })}
+        <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 4 }}>🌍 Interactive World Map</h3>
+        <p style={{ color: C.accent, fontSize: 10, marginBottom: 12 }}>👆 Tap any glowing point to explore that economy</p>
+        <div style={{ background: "linear-gradient(160deg, #061226, #040d1f)", border: `1px solid ${C.border}`, borderRadius: 14, padding: "16px 12px", position: "relative", overflow: "hidden" }}>
+          <WorldMap onSelect={setSelectedCountry} />
         </div>
       </div>
     </div>
   );
 }
+
+
 
 
 // ── News Page ─────────────────────────────────────────────────────────────────
@@ -1216,6 +1284,228 @@ function InvestPage() {
   );
 }
 
+// ── Economic Calendar Page ────────────────────────────────────────────────────
+function CountdownTimer({ targetDate }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
+  const diff = Math.max(0, targetDate - now);
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  const units = [[days, "D"], [hours, "H"], [mins, "M"], [secs, "S"]];
+  return (
+    <div style={{ display: "flex", gap: 5 }}>
+      {units.map(([v, l], i) => (
+        <div key={i} style={{ background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 7, padding: "5px 8px", minWidth: 38, textAlign: "center" }}>
+          <div style={{ color: C.text, fontSize: 15, fontWeight: 700, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{String(v).padStart(2, "0")}</div>
+          <div style={{ color: C.muted, fontSize: 8, marginTop: 2 }}>{l}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CalendarPage() {
+  // Generate upcoming events relative to today
+  const today = new Date();
+  const mkDate = (daysAhead, hour = 14) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() + daysAhead);
+    d.setHours(hour, 0, 0, 0);
+    return d.getTime();
+  };
+
+  const events = [
+    { title: "US Federal Reserve Rate Decision", cat: "Central Bank", impact: "high", date: mkDate(3), desc: "The Fed announces its benchmark interest rate decision, closely watched for hints on future monetary policy." },
+    { title: "US Inflation Report (CPI)", cat: "Inflation Data", impact: "high", date: mkDate(6), desc: "Monthly Consumer Price Index release — the key gauge of inflation that moves markets." },
+    { title: "NVIDIA Q2 Earnings", cat: "Earnings", impact: "high", date: mkDate(9), desc: "The world's most valuable chipmaker reports earnings, a bellwether for the entire AI sector." },
+    { title: "European Central Bank Meeting", cat: "Central Bank", impact: "medium", date: mkDate(12), desc: "The ECB sets eurozone interest rates and provides economic guidance for the bloc." },
+    { title: "US Jobs Report (Non-Farm Payrolls)", cat: "Employment", impact: "high", date: mkDate(15), desc: "Monthly employment data showing how many jobs the US economy added or lost." },
+    { title: "China GDP Growth Data", cat: "GDP Data", impact: "medium", date: mkDate(18), desc: "Quarterly GDP figures from the world's second-largest economy." },
+    { title: "Apple Product Event", cat: "Earnings", impact: "medium", date: mkDate(22), desc: "Apple unveils new products — historically a market-moving event for tech stocks." },
+    { title: "OPEC+ Production Meeting", cat: "Commodities", impact: "medium", date: mkDate(26), desc: "Oil-producing nations decide on output levels, directly affecting global energy prices." },
+  ].sort((a, b) => a.date - b.date);
+
+  const catColor = c => ({ "Central Bank": C.accent, "Inflation Data": C.gold, "Earnings": C.green, "Employment": C.purple, "GDP Data": "#fb923c", "Commodities": "#34d399" }[c] || C.accent);
+  const impactColor = i => i === "high" ? C.red : i === "medium" ? C.gold : C.muted;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <div className="fade-up" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h2 style={{ color: C.text, fontSize: 20, fontWeight: 700 }}>Economic Calendar</h2>
+        <Tag color="#fb923c">UPCOMING</Tag>
+      </div>
+
+      <div className="fade-up scale-in" style={{ animationDelay: "60ms", background: "#fb923c12", border: `1px solid #fb923c35`, borderLeft: `3px solid #fb923c`, borderRadius: 12, padding: "13px 18px" }}>
+        <p style={{ color: C.mutedLight, fontSize: 13, lineHeight: 1.6, margin: 0 }}>📅 These events can cause major market moves. Check back as the countdowns approach zero!</p>
+      </div>
+
+      {events.map((e, i) => (
+        <Card key={i} className="fade-up" style={{ animationDelay: `${120 + i * 70}ms` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 180 }}>
+              <div style={{ display: "flex", gap: 7, marginBottom: 8, flexWrap: "wrap", alignItems: "center" }}>
+                <Tag color={catColor(e.cat)}>{e.cat}</Tag>
+                <Tag color={impactColor(e.impact)}>{e.impact === "high" ? "🔴 High Impact" : e.impact === "medium" ? "🟡 Medium" : "Low"}</Tag>
+              </div>
+              <h3 style={{ color: C.text, fontSize: 15, fontWeight: 600, marginBottom: 5, lineHeight: 1.4 }}>{e.title}</h3>
+              <p style={{ color: C.mutedLight, fontSize: 12, lineHeight: 1.55, margin: "0 0 6px" }}>{e.desc}</p>
+              <div style={{ color: C.muted, fontSize: 11 }}>📆 {new Date(e.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
+            </div>
+            <CountdownTimer targetDate={e.date} />
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+// ── Investor Quiz Page ────────────────────────────────────────────────────────
+const QUIZ_QUESTIONS = [
+  { q: "Your investment drops 20% in a month. What do you do?", opts: [
+    { t: "Sell everything immediately", s: 0 },
+    { t: "Feel nervous but hold", s: 1 },
+    { t: "Hold calmly, it happens", s: 2 },
+    { t: "Buy more at the lower price", s: 3 },
+  ]},
+  { q: "What's your main investing goal?", opts: [
+    { t: "Protect what I have", s: 0 },
+    { t: "Steady, reliable growth", s: 1 },
+    { t: "Build wealth over time", s: 2 },
+    { t: "Maximum returns, fast", s: 3 },
+  ]},
+  { q: "How long until you need this money?", opts: [
+    { t: "Less than 2 years", s: 0 },
+    { t: "2 to 5 years", s: 1 },
+    { t: "5 to 15 years", s: 2 },
+    { t: "15+ years", s: 3 },
+  ]},
+  { q: "Which sounds most appealing?", opts: [
+    { t: "Government bonds & savings", s: 0 },
+    { t: "Blue-chip dividend stocks", s: 1 },
+    { t: "Growth stocks & index funds", s: 2 },
+    { t: "Crypto & emerging tech", s: 3 },
+  ]},
+  { q: "A friend doubles their money in crypto. You feel...", opts: [
+    { t: "Relieved I wasn't involved", s: 0 },
+    { t: "Curious but cautious", s: 1 },
+    { t: "Interested in learning more", s: 2 },
+    { t: "Regret missing out — let's go", s: 3 },
+  ]},
+];
+
+const QUIZ_RESULTS = [
+  { range: [0, 5], type: "The Guardian", icon: "🛡️", color: C.accent,
+    desc: "You prioritize safety and capital preservation above all. Volatility keeps you up at night, and that's perfectly fine — slow and steady builds lasting wealth.",
+    picks: ["Government Bonds", "High-Yield Savings", "Gold ETFs", "Dividend Aristocrats"],
+    allocation: "70% Bonds · 20% Stocks · 10% Cash" },
+  { range: [6, 9], type: "The Balancer", icon: "⚖️", color: C.green,
+    desc: "You want growth but with a safety net. A balanced, diversified approach suits you — enough risk to grow, enough stability to sleep well.",
+    picks: ["S&P 500 Index Funds", "Blue-Chip Stocks", "Corporate Bonds", "Real Estate ETFs"],
+    allocation: "50% Stocks · 35% Bonds · 15% Alternatives" },
+  { range: [10, 13], type: "The Builder", icon: "🏗️", color: C.gold,
+    desc: "You're focused on long-term wealth creation and can handle market swings. Time is on your side, and you use it to let compounding work its magic.",
+    picks: ["Growth Stocks", "Tech ETFs", "Emerging Markets", "Small-Cap Funds"],
+    allocation: "75% Stocks · 15% Growth Assets · 10% Bonds" },
+  { range: [14, 15], type: "The Maverick", icon: "🚀", color: "#f472b6",
+    desc: "You're a high-risk, high-reward investor chasing maximum returns. You embrace volatility as opportunity — just remember to never invest more than you can afford to lose.",
+    picks: ["Crypto (BTC/ETH)", "High-Growth Tech", "Startups & IPOs", "Leveraged ETFs"],
+    allocation: "60% Growth Stocks · 30% Crypto · 10% Speculative" },
+];
+
+function QuizPage() {
+  const [step, setStep] = useState(0);
+  const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [done, setDone] = useState(false);
+
+  const answer = (s) => {
+    const newScore = score + s;
+    const newAnswers = [...answers, s];
+    if (step + 1 >= QUIZ_QUESTIONS.length) {
+      setScore(newScore); setAnswers(newAnswers); setDone(true);
+    } else {
+      setScore(newScore); setAnswers(newAnswers); setStep(step + 1);
+    }
+  };
+
+  const reset = () => { setStep(0); setScore(0); setAnswers([]); setDone(false); };
+
+  const result = QUIZ_RESULTS.find(r => score >= r.range[0] && score <= r.range[1]) || QUIZ_RESULTS[1];
+  const progress = ((step) / QUIZ_QUESTIONS.length) * 100;
+
+  if (done) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <h2 className="fade-up" style={{ color: C.text, fontSize: 20, fontWeight: 700, textAlign: "center" }}>Your Investor Profile</h2>
+
+        <div className="scale-in" style={{ background: `linear-gradient(160deg, ${result.color}18, ${C.bgCard})`, border: `1px solid ${result.color}50`, borderTop: `3px solid ${result.color}`, borderRadius: 16, padding: "28px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 56, marginBottom: 12 }}>{result.icon}</div>
+          <div style={{ color: result.color, fontSize: 26, fontWeight: 800, fontFamily: "'Syne', sans-serif", marginBottom: 12 }}>{result.type}</div>
+          <p style={{ color: C.mutedLight, fontSize: 14, lineHeight: 1.7, maxWidth: 400, margin: "0 auto 20px" }}>{result.desc}</p>
+          <div style={{ display: "inline-block", background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 18px" }}>
+            <div style={{ color: C.muted, fontSize: 10, letterSpacing: 1, marginBottom: 4 }}>SUGGESTED ALLOCATION</div>
+            <div style={{ color: C.text, fontSize: 13, fontWeight: 600 }}>{result.allocation}</div>
+          </div>
+        </div>
+
+        <Card className="fade-up" style={{ animationDelay: "150ms" }}>
+          <h3 style={{ color: C.muted, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 12 }}>💎 Recommended For You</h3>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {result.picks.map((p, i) => (
+              <div key={i} className="fade-up" style={{ animationDelay: `${200 + i * 60}ms`, background: result.color + "15", border: `1px solid ${result.color}40`, borderRadius: 8, padding: "8px 14px", color: result.color, fontSize: 13, fontWeight: 600 }}>{p}</div>
+            ))}
+          </div>
+        </Card>
+
+        <button onClick={reset} className="btn-hover fade-up" style={{ animationDelay: "300ms", background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 12, padding: "13px", color: C.text, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+          ↺ Retake Quiz
+        </button>
+
+        <div className="fade-up" style={{ animationDelay: "350ms", background: C.redDim, border: `1px solid ${C.red}20`, borderRadius: 10, padding: "11px 16px" }}>
+          <p style={{ color: C.muted, fontSize: 11, lineHeight: 1.6, margin: 0 }}>⚠️ This quiz is for educational and entertainment purposes only. It is not personalized financial advice. Consult a licensed advisor before investing.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const cur = QUIZ_QUESTIONS[step];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div className="fade-up">
+        <h2 style={{ color: C.text, fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Investor Quiz</h2>
+        <p style={{ color: C.muted, fontSize: 13 }}>Question {step + 1} of {QUIZ_QUESTIONS.length}</p>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ height: 6, background: C.border, borderRadius: 3, overflow: "hidden" }}>
+        <div style={{ width: `${progress}%`, height: "100%", background: `linear-gradient(90deg, ${C.accent}, #f472b6)`, borderRadius: 3, transition: "width 0.4s ease" }} />
+      </div>
+
+      <div key={step} className="scale-in" style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 16, padding: "24px 22px" }}>
+        <h3 style={{ color: C.text, fontSize: 18, fontWeight: 600, lineHeight: 1.4, marginBottom: 20 }}>{cur.q}</h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {cur.opts.map((o, i) => (
+            <button key={i} onClick={() => answer(o.s)} className="fade-up"
+              style={{
+                animationDelay: `${i * 60}ms`,
+                background: C.bgPanel, border: `1px solid ${C.border}`,
+                borderRadius: 11, padding: "15px 18px", cursor: "pointer",
+                textAlign: "left", color: C.text, fontSize: 14, fontWeight: 500,
+                transition: "all 0.15s ease",
+              }}
+              onMouseOver={e => { e.currentTarget.style.borderColor = C.accent; e.currentTarget.style.background = C.accentDim; e.currentTarget.style.transform = "translateX(4px)"; }}
+              onMouseOut={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = C.bgPanel; e.currentTarget.style.transform = "translateX(0)"; }}>
+              {o.t}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Home Page ─────────────────────────────────────────────────────────────────
 function HomePage({ setPage }) {
   const [quote, setQuote] = useState(null);
@@ -1229,6 +1519,8 @@ function HomePage({ setPage }) {
     { page: "news", icon: "📰", title: "Economy News", desc: "Price drops, inflation & global stories", color: C.gold },
     { page: "glossary", icon: "📚", title: "Glossary", desc: "AI definitions for key economic terms", color: C.purple },
     { page: "invest", icon: "💎", title: "Best Investments", desc: "AI-ranked picks with profit radars", color: C.green },
+    { page: "calendar", icon: "📅", title: "Economic Calendar", desc: "Upcoming events with live countdowns", color: "#fb923c" },
+    { page: "quiz", icon: "🧭", title: "Investor Quiz", desc: "Discover your investing personality", color: "#f472b6" },
   ];
 
   return (
@@ -1310,6 +1602,8 @@ export default function App() {
     news: <NewsPage />,
     glossary: <GlossaryPage />,
     invest: <InvestPage />,
+    calendar: <CalendarPage />,
+    quiz: <QuizPage />,
   };
 
   return (
@@ -1332,6 +1626,11 @@ export default function App() {
 
       {/* Page content */}
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "20px 16px 96px" }}>
+        {(page === "calendar" || page === "quiz") && (
+          <button onClick={() => navigate("home")} className="btn-hover" style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 9, padding: "7px 14px", color: C.mutedLight, fontSize: 12, fontWeight: 500, cursor: "pointer", marginBottom: 16, display: "inline-flex", alignItems: "center", gap: 6 }}>
+            ← Back to Home
+          </button>
+        )}
         <PageTransition pageKey={page}>
           {pageMap[page]}
         </PageTransition>
